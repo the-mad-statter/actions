@@ -399,8 +399,11 @@ async function acquireRMacOS(version: IRVersion): Promise<string> {
   // Remove homebrew R from the PATH
   try {
 	const {stdout: brewInfo} = await exec.getExecOutput("brew", ["info", "--json", "r"]);
-	core.info(brewInfo);
-    await exec.exec("brew", ["unlink", "r"]);
+	const brewRVersion = JSON.parse(brewInfo);
+	core.info(brewRVersion.toString());
+	if (brewRVersion) {
+      await exec.exec("brew", ["unlink", "r"]);
+	}
   } catch (error) {
     core.debug(`${error}`);
   }
